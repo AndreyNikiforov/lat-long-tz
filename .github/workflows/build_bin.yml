@@ -1,0 +1,38 @@
+name: Build Binary
+
+on: 
+  pull_request:
+    # branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+
+  build_macos:
+    runs-on: macos-14-xlarge
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+    
+    - name: Install Dev dependencies
+      run: |
+        pip3 install --disable-pip-version-check timezonefinder pyarrow tqdm pyinstaller
+
+    - name: Build Release Executables
+      run: |
+        PYTHONHASHSEED=42 pyinstaller --onefile gen3.py src/starters/icloud.py --name gen3-macos-arm64
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: gen3-macos-arm64
+        if-no-files-found: error
+        path: |
+          dist/gen3*
