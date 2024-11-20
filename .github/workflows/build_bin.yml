@@ -26,7 +26,7 @@ jobs:
     
     - name: Install Dev dependencies
       run: |
-        pip3 install --disable-pip-version-check timezonefinder pyarrow tqdm pyinstaller
+        pip3 install --disable-pip-version-check timezonefinder pyarrow rich pyinstaller
 
     - name: Build Release Executables
       run: |
