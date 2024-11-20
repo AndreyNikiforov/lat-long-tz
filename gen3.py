@@ -1,6 +1,9 @@
 # this will generate all lng/lat/tz tuples for training
 # pip install timezonefinder pyarrow tqdm
 
+from multiprocessing import freeze_support
+freeze_support()  # fmt: skip # fixing tqdm on macos
+
 from timezonefinder import TimezoneFinder
 import pyarrow.parquet as pq
 import pyarrow as pa
