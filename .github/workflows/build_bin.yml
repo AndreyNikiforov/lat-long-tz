@@ -30,7 +30,7 @@ jobs:
 
     - name: Build Release Executables
       run: |
-        PYTHONHASHSEED=42 pyinstaller --onefile gen3.py src/starters/icloud.py --name gen3-macos-arm64
+        PYTHONHASHSEED=42 pyinstaller --onefile gen3.py --name gen3-macos-arm64
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
