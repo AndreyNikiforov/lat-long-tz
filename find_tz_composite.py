@@ -39,7 +39,7 @@ CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 @click.argument("records_per_writing_batch", type=click.INT)
 
 def main(input_file, output_file, records_per_reading_batch, records_per_writing_batch):
-    """Generates files with lng-lat-tz 
+    """Finds tz for given file with lng-lat and prodices composite lng-lat-tz file
 
     INPUT_FILE is for the input parque file with lng-lat data, e.g `geo3-0.parquet`
 
@@ -63,7 +63,7 @@ def main(input_file, output_file, records_per_reading_batch, records_per_writing
             total_count = parquet_file.scan_contents(batch_size=records_per_reading_batch)
             progress.update(scan_task, advance=1)
             print(f"Total records: {total_count}")
-            total_task = progress.add_task("Converting", total=total_count)
+            total_task = progress.add_task("Producing lng-lat-tz file", total=total_count)
             src = file_iterator(parquet_file, records_per_reading_batch)
             with pq.ParquetWriter(output_file, dummy_tbl.schema) as writer:
                 # chunk to limit ram use

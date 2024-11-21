@@ -26,16 +26,17 @@ jobs:
     
     - name: Install Dev dependencies
       run: |
-        pip3 install --disable-pip-version-check timezonefinder pyarrow rich pyinstaller
+        pip3 install --disable-pip-version-check pyarrow timezonefinder rich more-itertools click pyinstaller
 
     - name: Build Release Executables
       run: |
-        PYTHONHASHSEED=42 pyinstaller --onefile gen3.py --name gen3-macos-arm64
+        PYTHONHASHSEED=42 pyinstaller --onefile find_tz.py --name find-tz-macos-arm64
+        PYTHONHASHSEED=42 pyinstaller --onefile find_tz_composite.py --name find-tz-composite-macos-arm64
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: gen3-macos-arm64
+        name: bin-macos-arm64
         if-no-files-found: error
         path: |
-          dist/gen3*
+          dist/find*
