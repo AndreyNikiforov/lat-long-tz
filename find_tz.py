@@ -44,11 +44,11 @@ def main(input_file, output_file, records_per_reading_batch, records_per_writing
 
         INPUT_FILE is for the input parque file with lng-lat data, e.g `geo3-0.parquet`
 
-        OUTPUT_FILE is for the output parque file with lng-lat-tz data, e.g `data3-0.parquet`
+        OUTPUT_FILE is for the output parque file with tz data, e.g `tz3-0.parquet`
 
         RECORDS_PER_READING_BATCH is the number of records to read, e.g. 65536
 
-        RECORDS_PER_WRITING_BATCH is the number of records to accumulate in ram before flushing to disk, e.g. 10000000
+        RECORDS_PER_WRITING_BATCH is the number of records to accumulate in RAM before flushing to disk, e.g. 10000000
     """
     with Progress(
             TextColumn("[progress.description]{task.description}"),
