@@ -26,24 +26,30 @@ CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 @click.command(context_settings=CONTEXT_SETTINGS, no_args_is_help=True)
 @click.argument("input_file", type=click.STRING)
 @click.argument("skip", type=click.INT)
-@click.argument("count", type=click.INT)
+@click.argument("limit", type=click.INT)
 
-def main(input_file, skip, count):
+def main(input_file, skip, limit):
     """Reads content of the parquet files 
 
         INPUT_FILE - what to read
 
         SKIP number of records to skip first, e.g. 0
 
-        COUNT number of records to show, e.g. 10
+        LIMIT number of records to show, e.g. 10
 
     """
+    if skip < 0:
+        print("Skip should be zero or greater")
+        return 1
+    if limit < 1:
+        print("Limit should be greater than 1")
+        return 1
     with pq.ParquetFile(input_file) as parquet_file:
         src = file_iterator(parquet_file)
-        sliced = islice(src, skip, skip+count)
+        sliced = islice(src, skip, skip+limit)
         for rec in sliced:
             print(rec)
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())
