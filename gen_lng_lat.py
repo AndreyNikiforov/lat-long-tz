@@ -94,10 +94,10 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
 
         if skip < 0:
             print("Skip option should be positive or zero")
-            return(1)
+            return 1
         if limit is not None and limit < 1:
             print("Limit option, if specified, should be positive and greater than zero")
-            return(1)
+            return 1
         total_count = len(lng_range) * len(lat_range) * 10**(precision*2) - skip * records_per_file
         if limit is not None:
             total_count = min(total_count, limit * records_per_file)
