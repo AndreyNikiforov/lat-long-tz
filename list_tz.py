@@ -8,6 +8,7 @@ import pyarrow.parquet as pq
 import pyarrow as pa
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn, TimeRemainingColumn,TransferSpeedColumn
 from timezonefinder import TimezoneFinder
+import sys
 
 # constants
 dummy_lst = [{'tz': "abc"}]
@@ -46,4 +47,4 @@ def main(filename, add):
     return 0
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

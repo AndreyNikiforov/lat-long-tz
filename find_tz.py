@@ -9,6 +9,7 @@ import pyarrow.parquet as pq
 import pyarrow as pa
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn, TimeRemainingColumn,TransferSpeedColumn
 from timezonefinder import TimezoneFinder
+import sys
 
 # constants
 dummy_lst = [{'tz': "abc"}]
@@ -78,7 +79,7 @@ def main(input_file, output_file, records_per_reading_batch, records_per_writing
                         progress.update(total_task, advance=1)
                     tbl = pa.Table.from_pylist(lst)
                     writer.write_table(tbl)
-
+    return 0
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

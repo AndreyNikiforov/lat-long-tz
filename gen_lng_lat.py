@@ -9,6 +9,7 @@ from more_itertools import consume, ichunked
 import pyarrow.parquet as pq
 import pyarrow as pa
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn, TimeRemainingColumn,TransferSpeedColumn
+import sys
 
 # constants
 lng_range = range(-180, 180, 1)
@@ -137,4 +138,4 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

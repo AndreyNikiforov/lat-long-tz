@@ -8,6 +8,7 @@ import click
 import pyarrow.parquet as pq
 import pyarrow as pa
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn, TimeRemainingColumn,TransferSpeedColumn
+import sys
 
 # constants
 dummy_lst = [{'lng': 1.2, 'lat': 3.4, 'tz': "abc"}]
@@ -49,7 +50,7 @@ def main(input_file, skip, limit):
         sliced = islice(src, skip, skip+limit)
         for rec in sliced:
             print(rec)
-
+    return 0
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())
