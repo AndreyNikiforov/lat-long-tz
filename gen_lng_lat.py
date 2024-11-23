@@ -100,10 +100,10 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
         if limit is not None and limit < 1:
             print("Limit option, if specified, should be positive and greater than zero")
             return 1
-        total_count = len(lng_range) * len(lat_range) * 10**(precision*2) - skip * records_per_file
+        total_count = len(lng_range) * len(lat_range) * 10**(precision*2)
         if limit is not None:
-            total_count = min(total_count, limit * records_per_file)
-        print(f"Estimated count: {total_count}")
+            total_count = min(total_count, (skip + limit) * records_per_file)
+        print(f"Estimated count (limited, but not skipped): {total_count}")
         total_task = progress.add_task("Total", total=total_count)
         if precision == 0:
             get_lng_lat = get_lng_lat0
@@ -134,7 +134,7 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
                         tbl = pa.Table.from_pydict(lst)
                         writer.write_table(tbl)
             else:
-                progress.update(total_task, advance=0)  # just updating time when consuming skipped files
+                progress.update(total_task, advance=records_per_file)  # mark skipped file
     return 0
 
 
