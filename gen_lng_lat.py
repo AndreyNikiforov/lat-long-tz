@@ -10,6 +10,7 @@ import pyarrow.parquet as pq
 import pyarrow as pa
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn, TimeRemainingColumn,TransferSpeedColumn
 import sys
+import os
 
 # constants
 lng_range = range(-180, 181, 1)
@@ -85,6 +86,18 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
 
         RECORDS_PER_BATCH is the number of records to accumulate in ram before flushing to disk (optimize for RAM usage), e.g. 10000000
     """
+    if skip < 0:
+        print("Skip option should be positive or zero")
+        return 1
+    if limit is not None and limit < 1:
+        print("Limit option, if specified, should be positive and greater than zero")
+        return 1
+    print(f"Process ID: {os.getpid()}")
+    total_count = len(lng_range) * len(lat_range) * 10**(precision*2)
+    if limit is not None:
+        total_count = min(total_count, (skip + limit) * records_per_file)
+    print(f"Estimated count (limited, but not skipped): {total_count}")
+
     with Progress(
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
@@ -94,16 +107,6 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
             TransferSpeedColumn()
         ) as progress:
 
-        if skip < 0:
-            print("Skip option should be positive or zero")
-            return 1
-        if limit is not None and limit < 1:
-            print("Limit option, if specified, should be positive and greater than zero")
-            return 1
-        total_count = len(lng_range) * len(lat_range) * 10**(precision*2)
-        if limit is not None:
-            total_count = min(total_count, (skip + limit) * records_per_file)
-        print(f"Estimated count (limited, but not skipped): {total_count}")
         total_task = progress.add_task("Total", total=total_count)
         if precision == 0:
             get_lng_lat = get_lng_lat0
