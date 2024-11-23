@@ -60,11 +60,11 @@ jobs:
     
     - name: Install Dev dependencies
       run: |
-        pip3 install --disable-pip-version-check pyarrow timezonefinder rich more-itertools click pyinstaller "dask[complete]"
+        pip3 install --disable-pip-version-check click pyinstaller "dask[complete]"
 
     - name: Build Release Executables
       run: |
-        PYTHONHASHSEED=42 pyinstaller --onefile parquet_counter.py --name parquet-counter-macos-arm64
+        PYTHONHASHSEED=42 pyinstaller --onefile parquet_counter.py --name parquet-counter-macos-arm64 --collect-all distributed
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
