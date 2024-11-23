@@ -26,7 +26,7 @@ jobs:
     
     - name: Install Dev dependencies
       run: |
-        pip3 install --disable-pip-version-check pyarrow timezonefinder rich more-itertools click pyinstaller "dask[complete]"
+        pip3 install --disable-pip-version-check pyarrow timezonefinder rich more-itertools click pyinstaller
 
     - name: Build Release Executables
       run: |
@@ -35,12 +35,41 @@ jobs:
         PYTHONHASHSEED=42 pyinstaller --onefile gen_lng_lat.py --name gen-lng-lat-macos-arm64
         PYTHONHASHSEED=42 pyinstaller --onefile list_tz.py --name list-tz-macos-arm64
         PYTHONHASHSEED=42 pyinstaller --onefile parquet_reader.py --name parquet-reader-macos-arm64
-        PYTHONHASHSEED=42 pyinstaller --onefile parquet_counter.py --name parquet-counter-macos-arm64
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: bin-macos-arm64
+        if-no-files-found: error
+        path: |
+          dist/*
+
+  build_macos_dask:
+    runs-on: macos-14-xlarge
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+    
+    - name: Install Dev dependencies
+      run: |
+        pip3 install --disable-pip-version-check pyarrow timezonefinder rich more-itertools click pyinstaller "dask[complete]"
+
+    - name: Build Release Executables
+      run: |
+        PYTHONHASHSEED=42 pyinstaller --onefile parquet_counter.py --name parquet-counter-macos-arm64
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: bin-dask-macos-arm64
         if-no-files-found: error
         path: |
           dist/*
