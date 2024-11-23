@@ -12,21 +12,22 @@ from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, T
 import sys
 
 # constants
-lng_range = range(-180, 180, 1)
-lat_range = range(-90, 90, 1)
+lng_range = range(-180, 181, 1)
+lat_range = range(-90, 91, 1)
+degree_range = range(0,10, 1)
 
 dummy_lst = [{'lng': 1.2, 'lat': 3.4}]
 dummy_tbl = pa.Table.from_pylist(dummy_lst)
 
 def get_lng_lat3():
-    for lng in [lng * 1.0 for lng in lng_range]:
-        for lat in [lat * 1.0 for lat in lat_range]:
-            for lng_degree1 in [degree for degree in range(0,9)]:
-                for lat_degree1 in [degree for degree in range(0,9)]:
-                    for lng_degree2 in [degree for degree in range(0,9)]:
-                        for lat_degree2 in [degree for degree in range(0,9)]:
-                            for lng_degree3 in [degree for degree in range(0,9)]:
-                                for lat_degree3 in [degree for degree in range(0,9)]:
+    for lng in lng_range:
+        for lat in lat_range:
+            for lng_degree1 in degree_range:
+                for lat_degree1 in degree_range:
+                    for lng_degree2 in degree_range:
+                        for lat_degree2 in degree_range:
+                            for lng_degree3 in degree_range:
+                                for lat_degree3 in degree_range:
                                     if lng_degree3 > 0 or lat_degree3 > 0:
                                         # prev precision degrees were already written to data{0,1,2}
                                         lng_ = lng + lng_degree1/10**1 + lng_degree2/10**2 + lng_degree3/10**3
@@ -34,12 +35,12 @@ def get_lng_lat3():
                                         yield lng_, lat_
 
 def get_lng_lat2():
-    for lng in [lng * 1.0 for lng in lng_range]:
-        for lat in [lat * 1.0 for lat in lat_range]:
-            for lng_degree1 in [degree for degree in range(0,9)]:
-                for lat_degree1 in [degree for degree in range(0,9)]:
-                    for lng_degree2 in [degree for degree in range(0,9)]:
-                        for lat_degree2 in [degree for degree in range(0,9)]:
+    for lng in lng_range:
+        for lat in lat_range:
+            for lng_degree1 in degree_range:
+                for lat_degree1 in degree_range:
+                    for lng_degree2 in degree_range:
+                        for lat_degree2 in degree_range:
                             if lng_degree2 > 0 or lat_degree2 > 0:
                                 # prev precision degrees were already written to data{0,1}
                                 lng_ = lng + lng_degree1/10**1 + lng_degree2/10**2
@@ -47,10 +48,10 @@ def get_lng_lat2():
                                 yield lng_, lat_
 
 def get_lng_lat1():
-    for lng in [lng * 1.0 for lng in lng_range]:
-        for lat in [lat * 1.0 for lat in lat_range]:
-            for lng_degree1 in [degree for degree in range(0,9)]:
-                for lat_degree1 in [degree for degree in range(0,9)]:
+    for lng in lng_range:
+        for lat in lat_range:
+            for lng_degree1 in degree_range:
+                for lat_degree1 in degree_range:
                     if lng_degree1 > 0 or lat_degree1 > 0:
                         # prev precision degrees were already written to data{0}
                         lng_ = lng + lng_degree1/10**1
@@ -58,9 +59,9 @@ def get_lng_lat1():
                         yield lng_, lat_
 
 def get_lng_lat0():
-    for lng in [lng * 1.0 for lng in lng_range]:
-        for lat in [lat * 1.0 for lat in lat_range]:
-            yield lng, lat
+    for lng in lng_range:
+        for lat in lat_range:
+            yield float(lng), float(lat)
 
 CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 
