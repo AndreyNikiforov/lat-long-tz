@@ -95,7 +95,7 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
     print(f"Process ID: {os.getpid()}")
     total_count = len(lng_range) * len(lat_range) * 10**(precision*2)
     if skip * records_per_file > total_count:
-        print("Skiping more than max possible")
+        print("Skipping more than max possible")
         return 1
     if limit is not None:
         total_count = min(total_count, (skip + limit) * records_per_file)
