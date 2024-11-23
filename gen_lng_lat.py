@@ -140,7 +140,8 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
                         tbl = pa.Table.from_pydict(lst)
                         writer.write_table(tbl)
             else:
-                progress.update(total_task, advance=records_per_file)  # mark skipped file
+                for sub in src:
+                    progress.update(total_task, advance=1)  # for responsive canceling
     return 0
 
 
