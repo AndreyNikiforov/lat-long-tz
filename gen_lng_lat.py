@@ -126,11 +126,12 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
                 with pq.ParquetWriter(file_name, dummy_tbl.schema) as writer:
                     # chunk further to limit ram use
                     for sub in ichunked(src, records_per_batch):
-                        lst = []
+                        lst = {'lng': [], 'lat': []}
                         for lng, lat in sub:
-                            lst.append({'lng': lng, 'lat': lat})
+                            lst['lng'].append(lng)
+                            lst['lat'].append(lat)
                             progress.update(total_task, advance=1)
-                        tbl = pa.Table.from_pylist(lst)
+                        tbl = pa.Table.from_pydict(lst)
                         writer.write_table(tbl)
             else:
                 progress.update(total_task, advance=0)  # just updating time when consuming skipped files

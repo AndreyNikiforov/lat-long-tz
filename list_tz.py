@@ -39,10 +39,10 @@ def main(filename, add):
         ) as progress:
 
         with pq.ParquetWriter(filename, dummy_tbl.schema) as writer:
-            lst = []
+            lst = {'tz': []}
             for tz in progress.track(tf.timezone_names + list(add)):
-                lst.append({'tz': tz})
-            tbl = pa.Table.from_pylist(lst)
+                lst['tz'].append(tz)
+            tbl = pa.Table.from_pydict(lst)
             writer.write_table(tbl)
     return 0
 

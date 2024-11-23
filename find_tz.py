@@ -70,14 +70,14 @@ def main(input_file, output_file, records_per_reading_batch, records_per_writing
             with pq.ParquetWriter(output_file, dummy_tbl.schema) as writer:
                 # chunk to limit ram use
                 for sub in ichunked(src, records_per_writing_batch):
-                    lst = []
+                    lst = {'tz': []}
                     for rec in sub:
                         lng = rec['lng']
                         lat = rec['lat']
                         tz = get_tz(lng, lat, default)
-                        lst.append({'tz': tz})
+                        lst['tz'].append(tz)
                         progress.update(total_task, advance=1)
-                    tbl = pa.Table.from_pylist(lst)
+                    tbl = pa.Table.from_pydict(lst)
                     writer.write_table(tbl)
     return 0
 
