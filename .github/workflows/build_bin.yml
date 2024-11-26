@@ -73,3 +73,37 @@ jobs:
         if-no-files-found: error
         path: |
           dist/*
+
+  build_windows:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    
+    - name: Install Dev dependencies
+      run: |
+        pip3 install --disable-pip-version-check pyarrow timezonefinder rich more-itertools click pyinstaller
+
+    - name: Build Release Executables
+      run: |
+        PYTHONHASHSEED=42 pyinstaller --onefile find_tz.py --name find-tz-windows-amd64
+        PYTHONHASHSEED=42 pyinstaller --onefile find_tz_composite.py --name find-tz-composite-windows-amd64
+        PYTHONHASHSEED=42 pyinstaller --onefile gen_lng_lat.py --name gen-lng-lat-windows-amd64
+        PYTHONHASHSEED=42 pyinstaller --onefile list_tz.py --name list-tz-windows-amd64
+        PYTHONHASHSEED=42 pyinstaller --onefile parquet_reader.py --name parquet-reader-windows-amd64
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: bin-windows-amd64
+        if-no-files-found: error
+        path: |
+          dist/*
