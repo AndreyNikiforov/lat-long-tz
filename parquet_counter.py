@@ -8,7 +8,7 @@ import re
 
 
 def blocksize_validator(ctx, param, value):
-    if re.match('\d+[kKmMgG]', value):
+    if re.match('\\d+[kKmMgG]', value):
         return value
     else:
         raise click.BadParameter('Invalid blocksize. Must be number with K/M/G suffix')
@@ -18,14 +18,14 @@ CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 @click.command(context_settings=CONTEXT_SETTINGS, no_args_is_help=True)
 @click.argument("path", type=click.STRING)
 @click.option(
-    "--blocksize", 
+    "--block-size", 
     type=click.STRING, 
     default="256M", 
     show_default=True, 
     help="What blocksize to use when reading parquet",
     callback=blocksize_validator
     )
-def main(path, blocksize):
+def main(path, block_size):
     """Count records in all parquet files matching pattern
 
         PATH file pattern to files, e.g. "data/lng-lat-tz/geo*.parquet", one file, or one folder
@@ -44,7 +44,7 @@ def main(path, blocksize):
         # aggregate_files=True,
         # split_row_groups="adaptive",
         # split_row_groups=1, 
-        blocksize=blocksize, # default
+        blocksize=block_size, # default
         # 6m/adaptive - 7min
         # 6m/infer - 8min
         # 8m/infer - 8min
