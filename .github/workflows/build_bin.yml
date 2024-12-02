@@ -35,6 +35,7 @@ jobs:
         PYTHONHASHSEED=42 pyinstaller --onefile gen_lng_lat.py --name gen-lng-lat-macos-arm64
         PYTHONHASHSEED=42 pyinstaller --onefile list_tz.py --name list-tz-macos-arm64
         PYTHONHASHSEED=42 pyinstaller --onefile parquet_reader.py --name parquet-reader-macos-arm64
+        PYTHONHASHSEED=42 pyinstaller --onefile parquet_schema.py --name parquet-schema-macos-arm64
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
@@ -99,6 +100,7 @@ jobs:
         PYTHONHASHSEED=42 pyinstaller --onefile gen_lng_lat.py --name gen-lng-lat-windows-amd64
         PYTHONHASHSEED=42 pyinstaller --onefile list_tz.py --name list-tz-windows-amd64
         PYTHONHASHSEED=42 pyinstaller --onefile parquet_reader.py --name parquet-reader-windows-amd64
+        PYTHONHASHSEED=42 pyinstaller --onefile parquet_schema.py --name parquet-schema-windows-amd64
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
