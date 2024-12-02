@@ -5,7 +5,7 @@
 
 import click
 
-from more_itertools import consume, ichunked
+from more_itertools import ichunked
 import pyarrow.parquet as pq
 import pyarrow as pa
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn, TimeRemainingColumn,TransferSpeedColumn
@@ -17,8 +17,10 @@ lng_range = range(-180, 181, 1)
 lat_range = range(-90, 91, 1)
 degree_range = range(0,10, 1)
 
-dummy_lst = [{'lng': 1.2, 'lat': 3.4}]
-dummy_tbl = pa.Table.from_pylist(dummy_lst)
+output_schema = pa.schema([
+        pa.field('lng', pa.float64(), nullable=False),
+        pa.field('lat', pa.float64(), nullable=False),
+    ])
 
 def get_lng_lat3():
     for lng in lng_range:
@@ -82,9 +84,9 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
 
         PREFIX is for the output file names, e.g `geo3`
 
-        RECORDS_PER_FILE is the number of records to keep per output file, e.g. 1000000000
+        RECORDS_PER_FILE is the number of records to keep per output file, e.g. 1_000_000_000
 
-        RECORDS_PER_BATCH is the number of records to accumulate in ram before flushing to disk (optimize for RAM usage), e.g. 10000000
+        RECORDS_PER_BATCH is the number of records to accumulate in ram before flushing to disk (optimize for RAM usage), e.g. 10_000_000
     """
     if skip < 0:
         print("Skip option should be positive or zero")
@@ -129,7 +131,7 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
                 break
             if i >= skip:
                 file_name = f"{prefix}_{i}.parquet"
-                with pq.ParquetWriter(file_name, dummy_tbl.schema) as writer:
+                with pq.ParquetWriter(file_name, output_schema) as writer:
                     # chunk further to limit ram use
                     for sub in ichunked(src, records_per_batch):
                         lst = {'lng': [], 'lat': []}
@@ -137,7 +139,7 @@ def main(precision, prefix, records_per_file, records_per_batch, skip, limit):
                             lst['lng'].append(lng)
                             lst['lat'].append(lat)
                             progress.update(total_task, advance=1)
-                        tbl = pa.Table.from_pydict(lst)
+                        tbl = pa.Table.from_pydict(lst).cast(output_schema)
                         writer.write_table(tbl)
             else:
                 for sub in src:

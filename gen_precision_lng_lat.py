@@ -17,8 +17,10 @@ lng_range = range(-180, 181, 1)
 lat_range = range(-90, 91, 1)
 degree_range = range(0,10, 1)
 
-dummy_lst = [{'lng': 1.2, 'lat': 3.4}]
-dummy_tbl = pa.Table.from_pylist(dummy_lst)
+output_schema = pa.schema([
+        pa.field('lng', pa.float64(), nullable=False),
+        pa.field('lat', pa.float64(), nullable=False),
+    ])
 
 def get_precision_lng_lat():
     for lng in lng_range:
@@ -74,7 +76,7 @@ def main(folder):
                 lst['precision'].append(precision)
                 lst['lng'].append(lng)
                 lst['lat'].append(lat)
-            tbl = pa.Table.from_pydict(lst)
+            tbl = pa.Table.from_pydict(lst).cast(output_schema)
             pq.write_to_dataset(tbl, root_path=folder, partition_cols=["precision"])
 
     return 0

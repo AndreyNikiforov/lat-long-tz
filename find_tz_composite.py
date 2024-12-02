@@ -12,8 +12,11 @@ from timezonefinder import TimezoneFinder
 import sys
 
 # constants
-dummy_lst = [{'lng': 1.2, 'lat': 3.4, 'tz': "abc"}]
-dummy_tbl = pa.Table.from_pylist(dummy_lst)
+output_schema = pa.schema([
+        pa.field('lng', pa.float64(), nullable=False),
+        pa.field('lat', pa.float64(), nullable=False),
+        pa.field('tz', pa.string()),
+    ])
 
 tf = TimezoneFinder(in_memory=True)
 
@@ -47,9 +50,9 @@ def main(input_file, output_file, records_per_reading_batch, records_per_writing
 
     OUTPUT_FILE is for the output parque file with lng-lat-tz data, e.g `data3-0.parquet`
 
-    RECORDS_PER_READING_BATCH is the number of records to read, e.g. 65536
+    RECORDS_PER_READING_BATCH is the number of records to read, e.g. 65_536
 
-    RECORDS_PER_WRITING_BATCH is the number of records to accumulate in ram before flushing to disk, e.g. 10000000
+    RECORDS_PER_WRITING_BATCH is the number of records to accumulate in ram before flushing to disk, e.g. 10_000_000
     """
     with Progress(
             TextColumn("[progress.description]{task.description}"),
@@ -66,7 +69,7 @@ def main(input_file, output_file, records_per_reading_batch, records_per_writing
             progress.update(scan_task, advance=1)
             print(f"Total records: {total_count}")
             src = progress.track(file_iterator(parquet_file, records_per_reading_batch), total=total_count)
-            with pq.ParquetWriter(output_file, dummy_tbl.schema) as writer:
+            with pq.ParquetWriter(output_file, output_schema) as writer:
                 # chunk to limit ram use
                 for sub in ichunked(src, records_per_writing_batch):
                     lst = {'lng': [], 'lat': [], 'tz': []}
@@ -77,7 +80,7 @@ def main(input_file, output_file, records_per_reading_batch, records_per_writing
                         lst['lng'].append(lng)
                         lst['lat'].append(lat)
                         lst['tz'].append(tz)
-                    tbl = pa.Table.from_pydict(lst)
+                    tbl = pa.Table.from_pydict(lst).cast(output_schema)
                     writer.write_table(tbl)
     return 0
 
