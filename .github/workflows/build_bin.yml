@@ -32,6 +32,7 @@ jobs:
       run: |
         PYTHONHASHSEED=42 pyinstaller --onefile find_tz.py --name find-tz-macos-arm64
         PYTHONHASHSEED=42 pyinstaller --onefile find_tz_composite.py --name find-tz-composite-macos-arm64
+        PYTHONHASHSEED=42 pyinstaller --onefile find_tz_composite_int.py --name find-tz-composite-int-macos-arm64
         PYTHONHASHSEED=42 pyinstaller --onefile gen_lng_lat.py --name gen-lng-lat-macos-arm64
         PYTHONHASHSEED=42 pyinstaller --onefile gen_lng_lat_int.py --name gen-lng-lat-int-macos-arm64
         PYTHONHASHSEED=42 pyinstaller --onefile list_tz.py --name list-tz-macos-arm64
@@ -98,6 +99,7 @@ jobs:
       run: |
         PYTHONHASHSEED=42 pyinstaller --onefile find_tz.py --name find-tz-windows-amd64
         PYTHONHASHSEED=42 pyinstaller --onefile find_tz_composite.py --name find-tz-composite-windows-amd64
+        PYTHONHASHSEED=42 pyinstaller --onefile find_tz_composite_int.py --name find-tz-composite-int-windows-amd64
         PYTHONHASHSEED=42 pyinstaller --onefile gen_lng_lat.py --name gen-lng-lat-windows-amd64
         PYTHONHASHSEED=42 pyinstaller --onefile gen_lng_lat_int.py --name gen-lng-lat-int-windows-amd64
         PYTHONHASHSEED=42 pyinstaller --onefile list_tz.py --name list-tz-windows-amd64
