@@ -1,5 +1,6 @@
 __pycache__
-*.parquet
+data*
 build
 dist
 *.spec
+.DS_Store
