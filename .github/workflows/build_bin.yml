@@ -26,7 +26,7 @@ jobs:
     
     - name: Install Dev dependencies
       run: |
-        pip3 install --disable-pip-version-check pyarrow timezonefinder rich more-itertools click pyinstaller
+        pip3 install --disable-pip-version-check pyarrow timezonefinder rich more-itertools click pyinstaller onnxruntime cartopy matplotlib
 
     - name: Build Release Executables
       run: |
@@ -94,7 +94,7 @@ jobs:
     
     - name: Install Dev dependencies
       run: |
-        pip3 install --disable-pip-version-check pyarrow timezonefinder rich more-itertools click pyinstaller
+        pip3 install --disable-pip-version-check pyarrow timezonefinder rich more-itertools click pyinstaller onnxruntime cartopy matplotlib
 
     - name: Build Release Executables
       run: |

@@ -6,7 +6,11 @@ import sys
 from timezonefinder import TimezoneFinder
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn, TimeRemainingColumn,TransferSpeedColumn
 import time
-# pip install click timezonefinder rich onnxruntime
+import cartopy.crs as ccrs
+import matplotlib.pyplot as plt
+
+# pip install click timezonefinder rich onnxruntime cartopy matplotlib
+
 tf = TimezoneFinder(in_memory=True)
 
 def gen_lat_long():
@@ -27,6 +31,7 @@ def get_tz(lng, lat, default):
 # top most 71.349914, -156.705964
 # bottom most 24.666625, -80.768467
 # right most 47.264050, -52.116124
+# SF Bay: 37.792000, -122.389002
 def get_region(lat, lng):
     if 24.7 < lat and lat < 65.6 and \
         -168.5 < lng and lng < -52.1:
@@ -40,8 +45,9 @@ CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 @click.argument("model", type=click.Path(exists=True))
 @click.option("--limit", type=click.INT, default=1_000_000, help="Number of coordinates to try")
 @click.option("--input-name", type=click.STRING, default="lng-lat", help="Input name of the model")
+@click.option("--error-map", type=click.STRING, help="File name to export error map image")
 
-def main(model, limit, input_name):
+def main(model, limit, input_name, error_map):
     """Calculates model accuracy
 
         MODEL onnx or ort file of the model
@@ -52,6 +58,9 @@ def main(model, limit, input_name):
     sliced = islice(gen_lat_long(), limit)
     counter = 0
     correct_count = 0
+    ax = plt.axes(projection=ccrs.PlateCarree())
+    ax.set_global()
+    ax.coastlines()
     with Progress(
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
@@ -89,6 +98,8 @@ def main(model, limit, input_name):
                 correct_count = correct_count + 1
                 if region in regions:
                     regions[region]['correct'] += 1
+            else:
+                ax.plot([lng], [lat],color='red', marker=",") 
             acc = correct_count/counter
             progress.update(task_id, completed=counter, description=f"Accuracy:{acc:.1%}")
         progress.print(f"Speed of the model inference: {counter/total_time_model:.1f} op/sec, and pure code: {counter/total_time_code:.1f} op/sec")
@@ -98,6 +109,8 @@ def main(model, limit, input_name):
                 progress.print(f"Accuracy of the model inference for {region}: {regions[region]['correct']/regions[region]['counter']:.1%}")
             else:
                 progress.print(f"No samples for {region}")
+        if error_map:
+            plt.savefig(error_map, dpi=300)
     return 0
 
 
